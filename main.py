@@ -7,6 +7,7 @@ from fbprophet import Prophet
 from fbprophet.plot import plot_plotly
 from plotly import graph_objects as go
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 START = "2015-01-01"
@@ -14,7 +15,7 @@ TODAY = date.datetime.now()
 
 st.title(" Cryptocurrencies price prediction")
 crypto = ("BTC-USD", "ETH-USD", "ADA-USD", "XRP-USD", "SOL-USD",
-          "MATIC-USD", "LINK-USD", "FTM-USD", "LTC-USD")
+          "MATIC-USD", "LINK-USD", "FTM-USD", "LTC-USD","MANA-USD","SHIB-USD","DOGE-USD","HBAR-USD","ENJ-USD","CHZ-USD")
 selected_crypto = st.selectbox("Select dataset for prediction", crypto)
 n_year = st.slider("Year of prediction:", 1, 5)
 period = n_year*365
@@ -41,6 +42,8 @@ st.write(data.tail(5))
 # --------------------------------------------------------
 
 st.subheader("Exploring the Dataset")
+st.write("Dataset shape:")
+st.write(data.shape)    
 st.write("Dataset Columns:")
 st.write(data.columns)
 
@@ -49,8 +52,12 @@ st.write(data.columns)
 st.subheader("Data Visualization")
 st.write("It is considered a good practice to visualize the data at hand. So let’s plot our time series data:")
 
+st.write( data.describe())
 
-def plot_raw_data():
+st.subheader("The data types in our dataset")
+# st.write(data.dtypes())
+st.write(data.dtypes.astype(str))
+def plot_raw_data():    
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=data["Date"],
                   y=data['Open'], name="Crypto Open"))
@@ -86,7 +93,9 @@ m = Prophet(interval_width=0.95)
 m.fit(df_train)
 future = m.make_future_dataframe(periods=period)
 forecast = m.predict(future)
-st.write(forecast.tail())
+st.write(forecast.tail())   
+st.subheader("And here are   the values we want to focus on")
+st.write(forecast[['ds','yhat']].tail(5))
 
 # -------------------------------------------------------
 
